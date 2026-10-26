@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configured, Never Driven</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column with a "route" spine — the shopper's journey from configurator to test drive runs down the page */
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --ink:#16201F; --muted:#56635F; --line:#D5DDDA;
+  --accent:#0E6B62; --accent-soft:#DCEEEA; --warn:#A8621A; --warn-soft:#F6E8D7;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101716; --surface:#172120; --ink:#E6EEEC; --muted:#9AAAA6; --line:#2B3836;
+  --accent:#5FC4B6; --accent-soft:#17332F; --warn:#E3A35E; --warn-soft:#382A1B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101716; --surface:#172120; --ink:#E6EEEC; --muted:#9AAAA6; --line:#2B3836;
+  --accent:#5FC4B6; --accent-soft:#17332F; --warn:#E3A35E; --warn-soft:#382A1B; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:860px;margin:0 auto;padding-block:56px 80px;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.12}
+h1{font-size:clamp(2.1rem,5.6vw,3.5rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3.4vw,2rem);font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:500}
+p{margin:0;max-width:65ch}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.section{display:flex;flex-direction:column;gap:20px}
+.sec-head{display:flex;flex-direction:column;gap:8px}
+.lede{font-size:1.2rem;color:var(--muted);max-width:60ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero{display:flex;flex-direction:column;gap:22px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px 28px;border-top:1px solid var(--line);padding-top:20px}
+.meta div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.meta dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:0;font-weight:500}
+.note{font-size:.9rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;max-width:none}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.stat{display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:3px solid var(--accent)}
+.stat b{font-family:var(--display);font-size:2.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.95rem}
+.src{font-size:.82rem;color:var(--muted)}
+
+/* journey */
+.journey{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:24px;overflow-x:auto}
+.journey svg{display:block;width:100%;min-width:620px;height:auto}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:4px 12px;align-items:center}
+.bar .label{font-size:.95rem}
+.bar .n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.bar .track{grid-column:1/-1;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar .fill{height:100%;background:var(--muted);border-radius:5px}
+.bar.key .fill{background:var(--accent)} .bar.key .n{color:var(--ink);font-weight:500}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+.two>*{min-width:0}
+
+.insight{border-left:4px solid var(--warn);background:var(--warn-soft);padding:20px 22px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.insight p:first-of-type{font-family:var(--display);font-size:1.35rem;font-weight:500;line-height:1.3}
+
+/* persona */
+.persona{display:flex;flex-direction:column;gap:10px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.persona dl{margin:0;display:flex;flex-direction:column;gap:8px}
+.persona dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.persona dd{margin:0}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+th.num{text-align:right}
+tr.pick td{background:var(--accent-soft)}
+tr.pick td:first-child{font-weight:600}
+
+/* wireframes */
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.phone{display:flex;flex-direction:column;gap:10px}
+.screen{border:1.5px solid var(--line);border-radius:22px;padding:18px 14px;background:var(--surface);display:flex;flex-direction:column;gap:8px;min-height:360px;font-size:.85rem}
+.screen .t{font-weight:600}
+.blk{border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--muted)}
+.blk.img{height:70px;display:grid;place-items:center;background:var(--bg)}
+.blk.hot{border:2px solid var(--accent);background:var(--accent-soft);color:var(--ink)}
+.blk.hot small,.blk small{display:block;color:var(--muted);font-size:.78rem}
+.blk.btn{text-align:center;color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:center;color:var(--ink)}
+.chk i{width:12px;height:12px;border:1px solid var(--muted);border-radius:2px;flex:none}
+.chk i.on{background:var(--accent);border-color:var(--accent)}
+.tick{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-soft);display:grid;place-items:center;align-self:center;color:var(--accent);font-weight:700}
+.cap{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+
+/* stories */
+.stories{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.story{display:grid;grid-template-columns:56px minmax(0,1fr);gap:4px 16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.story .id{font-family:var(--mono);color:var(--accent);font-weight:500}
+.story p{font-size:.95rem}
+.story .ac{grid-column:2;color:var(--muted);font-size:.88rem}
+
+/* metrics */
+.metric{padding:20px;border-radius:8px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.metric.north{border:2px solid var(--accent)}
+.tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.metric.north .tag{color:var(--accent)} .metric.guard .tag{color:var(--warn)}
+.metric b{font-family:var(--display);font-size:1.25rem;font-weight:500}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.phase{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.phase.now{border:2px solid var(--accent)}
+.phase ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:.92rem}
+.gate{font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+
+ol.tests{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;max-width:65ch}
+
+footer{border-top:1px solid var(--line);padding-top:24px;display:flex;flex-direction:column;gap:10px;color:var(--muted);font-size:.92rem}
+footer strong{color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){a{transition:color .15s}}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+<header class="hero">
+  <span class="eyebrow">Product case study · Concept project · Germany, 2026</span>
+  <h1>Why EV shoppers configure a car but never drive it</h1>
+  <p class="lede">Shoppers on online-first EV brands finish a configuration, then leave without booking a test drive. I looked at where they drop off, why, and what a product team should build first.</p>
+  <dl class="meta">
+    <div><dt>Role</dt><dd>Product manager, solo concept</dd></div>
+    <div><dt>Market</dt><dd>Private EV shoppers, Germany</dd></div>
+    <div><dt>Brands studied</dt><dd>Tesla, Polestar, BYD, smart</dd></div>
+    <div><dt>Methods</dt><dd>Desk research, forum mining, user conversations, RICE, PRD</dd></div>
+  </dl>
+</header>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">The problem</span><h2>The test drive is where EV doubts get settled, and too few shoppers reach it</h2></div>
+  <p>Most buyers in Germany still drive before they buy. For electric cars the drive matters even more, because it answers questions about range, charging and comfort that a spec sheet cannot. Yet the step from a finished configuration to a booked drive often asks for a form, a phone number and a wait for a call-back.</p>
+  <div class="stats">
+    <div class="stat"><b>1.8×</b><span>more European buyers consider an EV after test-driving one</span></div>
+    <div class="stat"><b>39%</b><span>of European mass-market buyers have ever tried an EV, vs 66% of premium buyers</span></div>
+    <div class="stat"><b>72%</b><span>of private new-car buyers in Germany test-drove before buying</span></div>
+  </div>
+  <p class="src">Sources: <a href="https://www.bain.com/de/insights/global-auto-consumer-survey-regional-trends-in-a-changing-world/" target="_blank" rel="noopener">Bain Global Auto Consumer Survey, Oct 2026</a> (n=12,351) · <a href="https://www.autohaus.de/nachrichten/autohandel/dat-report-2022-eigenes-auto-bleibt-unverzichtbar-probefahrt-und-werkstatt-auch-3124763" target="_blank" rel="noopener">DAT Report 2022</a></p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Where it breaks</span><h2>Two different leaks after the summary screen</h2></div>
+  <div class="journey" role="img" aria-label="Shopper journey from configuration to test drive with two drop-off points">
+    <svg viewBox="0 0 760 210" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, system-ui, sans-serif">
+      <line x1="60" y1="70" x2="700" y2="70" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="70" x2="300" y2="70" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+      <g fill="var(--surface)" stroke="var(--accent)" stroke-width="3">
+        <circle cx="60" cy="70" r="11"/><circle cx="220" cy="70" r="11"/>
+      </g>
+      <g fill="var(--surface)" stroke="var(--muted)" stroke-width="3">
+        <circle cx="460" cy="70" r="11"/><circle cx="700" cy="70" r="11"/>
+      </g>
+      <g font-size="14" font-weight="600" fill="var(--ink)" text-anchor="middle">
+        <text x="60" y="38">Configure</text><text x="220" y="38">Summary &amp; price</text>
+        <text x="460" y="38">Booking form</text><text x="700" y="38">Test drive</text>
+      </g>
+      <g stroke="var(--warn)" stroke-width="2" fill="none">
+        <path d="M300 82 C 300 120, 280 130, 250 140"/>
+        <path d="M400 82 C 400 120, 420 130, 450 140"/>
+      </g>
+      <circle cx="300" cy="70" r="6" fill="var(--warn)"/><circle cx="400" cy="70" r="6" fill="var(--warn)"/>
+      <g font-size="13" fill="var(--ink)">
+        <text x="40" y="160" font-weight="600">Not ready yet</text>
+        <text x="40" y="180" fill="var(--muted)">Cost or comparison unsettled</text>
+        <text x="40" y="198" fill="var(--muted)">3 of 8 shoppers</text>
+        <text x="460" y="160" font-weight="600">Asked for data before seeing slots</text>
+        <text x="460" y="180" fill="var(--muted)">Phone number or call-back first</text>
+        <text x="460" y="198" fill="var(--muted)">2 of 8 shoppers · 6 of 21 forum complaints</text>
+      </g>
+    </svg>
+  </div>
+  <p>The first leak is about readiness: people leave to check monthly cost and compare models, and need an easy way back. The second is friction: they were ready, but had to hand over a phone number or wait for a call before they could see whether Saturday was free.</p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Research</span><h2>Three sources, read against each other</h2></div>
+  <div class="two">
+    <div class="section" style="gap:14px">
+      <h3>8 user conversations</h3>
+      <p class="src">2 recent buyers, 2 who configured but didn't book, 2 active shoppers, 2 company-car drivers. Ages 27–41.</p>
+      <div class="bars" aria-label="Interview findings, number of participants out of 8">
+        <div class="bar key"><span class="label">Needed real range, charging and monthly cost first</span><span class="n">6/8</span><div class="track"><div class="fill" style="width:75%"></div></div></div>
+        <div class="bar"><span class="label">Distance or weekday-only slots</span><span class="n">4/8</span><div class="track"><div class="fill" style="width:50%"></div></div></div>
+        <div class="bar"><span class="label">Welcomed a salesperson at the drive</span><span class="n">4/8</span><div class="track"><div class="fill" style="width:50%"></div></div></div>
+        <div class="bar"><span class="label">Booked easily where slots were visible</span><span class="n">3/8</span><div class="track"><div class="fill" style="width:37.5%"></div></div></div>
+        <div class="bar key"><span class="label">Not ready on the day they configured</span><span class="n">3/8</span><div class="track"><div class="fill" style="width:37.5%"></div></div></div>
+        <div class="bar key"><span class="label">Dropped when asked for data before slots</span><span class="n">2/8</span><div class="track"><div class="fill" style="width:25%"></div></div></div>
+      </div>
+    </div>
+    <div class="section" style="gap:14px">
+      <h3>21 coded forum posts</h3>
+      <p class="src">German EV and brand forums, mostly 2024–2026, one tag per post.</p>
+      <div class="bars" aria-label="Forum posts by tag, out of 21">
+        <div class="bar key"><span class="label">No reply, no call-back, cancelled</span><span class="n">6</span><div class="track"><div class="fill" style="width:28.6%"></div></div></div>
+        <div class="bar key"><span class="label">No car, too far, not yet available</span><span class="n">5</span><div class="track"><div class="fill" style="width:23.8%"></div></div></div>
+        <div class="bar"><span class="label">Positive experience</span><span class="n">5</span><div class="track"><div class="fill" style="width:23.8%"></div></div></div>
+        <div class="bar"><span class="label">Drive too short or car not ready</span><span class="n">3</span><div class="track"><div class="fill" style="width:14.3%"></div></div></div>
+        <div class="bar"><span class="label">Dealer expects purchase intent</span><span class="n">2</span><div class="track"><div class="fill" style="width:9.5%"></div></div></div>
+        <div class="bar"><span class="label">Missing price or range information</span><span class="n">0</span><div class="track"><div class="fill" style="width:0%"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <p>I also reviewed how Tesla, Polestar, BYD and smart handle booking. Tesla is fastest, with booking in under a minute and self-serve drives, but has few sites. Polestar offers flexible drive lengths and home drives, but has few locations. BYD and smart depend on each dealer or agent to respond, which is where public complaints cluster.</p>
+  <p class="note">Method note: the user conversations were informal and written up afterwards, so remarks are paraphrased. Structured interviews with a fixed guide are under way to validate the findings.</p>
+</section>
+
+<section class="insight">
+  <span class="eyebrow">Key insight</span>
+  <p>Forums only show failures. Conversations showed that many shoppers simply aren't ready yet.</p>
+  <p>Not one forum post mentioned missing price or range information, yet 6 of 8 people needed it before they would drive. People post when something breaks, not when they quietly leave to think. Relying on reviews alone would have led to a booking-only fix and missed half the problem.</p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Who we're designing for</span><h2>Two personas</h2></div>
+  <div class="two">
+    <div class="persona">
+      <h3>Jana, the budget comparer</h3>
+      <dl>
+        <div><dt>Situation</dt><dd>Late 20s to mid 30s, full-time job, first EV. Compares smart, BYD and Tesla on monthly cost.</dd></div>
+        <div><dt>What stops her</dt><dd>Won't give a phone number before she sees a free Saturday slot. Dealer is 25–40 km away.</dd></div>
+        <div><dt>She books if</dt><dd>Real weekend slots appear and confirm without a call.</dd></div>
+      </dl>
+    </div>
+    <div class="persona">
+      <h3>Murat, the company-car driver</h3>
+      <dl>
+        <div><dt>Situation</dt><dd>Late 30s to early 40s, drives a lot for work, picks from the employer's EV list.</dd></div>
+        <div><dt>What stops him</dt><dd>Nobody knows who books the drive: him, the fleet manager or the dealer. Days of emails.</dd></div>
+        <div><dt>He books if</dt><dd>All three see the same appointment and configuration.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Prioritisation</span><h2>Six ideas, scored with RICE</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Idea</th><th class="num">Reach / qtr</th><th class="num">Impact</th><th class="num">Confidence</th><th class="num">Effort (PM)</th><th class="num">Score</th></tr></thead>
+    <tbody>
+      <tr class="pick"><td>A · Book real slots on the configurator summary</td><td class="num">60,000</td><td class="num">2</td><td class="num">80%</td><td class="num">3</td><td class="num">32,000</td></tr>
+      <tr><td>B · Save configuration with a clear price summary</td><td class="num">40,000</td><td class="num">1</td><td class="num">80%</td><td class="num">2</td><td class="num">16,000</td></tr>
+      <tr class="pick"><td>C · Instant confirmation, reminders, one-tap reschedule</td><td class="num">20,000</td><td class="num">1</td><td class="num">80%</td><td class="num">2</td><td class="num">8,000</td></tr>
+      <tr><td>D · Home or workplace test drive</td><td class="num">8,000</td><td class="num">3</td><td class="num">50%</td><td class="num">6</td><td class="num">2,000</td></tr>
+      <tr><td>E · Self-serve keyless drive</td><td class="num">15,000</td><td class="num">2</td><td class="num">50%</td><td class="num">8</td><td class="num">1,875</td></tr>
+      <tr><td>F · 24-hour drive for high-intent shoppers</td><td class="num">3,000</td><td class="num">3</td><td class="num">50%</td><td class="num">4</td><td class="num">1,125</td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">Reach assumes 100,000 completed configurations a quarter, an illustrative figure. B's confidence rose from 50% to 80% after the conversations showed how many shoppers aren't ready on day one. A and C ship together as the MVP, because slots without instant confirmation break the promise.</p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">The MVP</span><h2>"Drive this car": slots first, data second, no call needed</h2></div>
+  <div class="phones">
+    <div class="phone">
+      <div class="screen">
+        <span class="t">Your configuration</span>
+        <div class="blk img">Car image</div>
+        <span style="color:var(--muted)">Total price · monthly rate</span>
+        <span class="t">Drive this car</span>
+        <div class="blk hot"><strong>Sat · 10:00</strong><small>Polestar Space · 18 km</small></div>
+        <div class="blk">Sat · 13:30<small>Partner location · 31 km</small></div>
+        <div class="blk">Sun · 11:00<small>Self-serve site · 40 km</small></div>
+        <div class="blk btn">Save and decide later</div>
+      </div>
+      <span class="cap">1 · Summary — real slots, before any form</span>
+    </div>
+    <div class="phone">
+      <div class="screen">
+        <span class="t">Book your drive</span>
+        <div class="blk hot"><strong>Sat · 10:00</strong><small>Configuration attached</small></div>
+        <div class="blk">Name</div><div class="blk">Email</div><div class="blk">Mobile number</div>
+        <span class="chk"><i class="on"></i>Valid driving licence</span>
+        <span class="chk"><i></i>I have questions, please call me</span>
+        <span class="chk"><i></i>News and offers (optional)</span>
+        <div class="blk hot btn"><strong>Confirm booking</strong></div>
+        <span class="cap" style="text-align:center">No account needed</span>
+      </div>
+      <span class="cap">2 · Booking — four fields, under 60 seconds</span>
+    </div>
+    <div class="phone">
+      <div class="screen">
+        <div class="tick">✓</div>
+        <span class="t" style="text-align:center">Your drive is booked</span>
+        <span class="cap" style="text-align:center">Email and SMS sent</span>
+        <div class="blk" style="color:var(--ink)">Sat · 10:00<br>Address and host name<br>Your configuration</div>
+        <div class="blk hot btn"><strong>Add to calendar</strong></div>
+        <div class="blk btn">Reschedule</div>
+        <div class="blk btn">Cancel</div>
+        <span class="cap" style="text-align:center">Reminders 24 h and 2 h before</span>
+      </div>
+      <span class="cap">3 · Confirmed — instantly, no call-back</span>
+    </div>
+  </div>
+  <p class="src">Slot times and locations are example content for the wireframe.</p>
+
+  <h3>User stories from the PRD</h3>
+  <div class="stories">
+    <div class="story"><span class="id">US1</span><p>As a shopper who just configured, I see bookable times on the summary screen.</p><span class="ac">The 3 earliest slots within 50 km show, matched to my model. No empty list: if nothing is free in 14 days, I see the next location and "notify me".</span></div>
+    <div class="story"><span class="id">US2</span><p>As a shopper, I book with as little typing as possible.</p><span class="ac">Four fields, no account, configuration attached automatically, marketing consent unticked and separate (GDPR). Median under 60 seconds in usability tests.</span></div>
+    <div class="story"><span class="id">US3</span><p>As a shopper, I know it's confirmed right away.</p><span class="ac">Confirmation, email and SMS within 1 minute. A call only if I asked for one. Host cancellations reach me within 2 hours, with 3 new slots.</span></div>
+    <div class="story"><span class="id">US4</span><p>As a shopper, I can change plans in one tap.</p><span class="ac">Reminders at 24 h and 2 h carry reschedule and cancel links. A cancelled slot is released within 5 minutes.</span></div>
+    <div class="story"><span class="id">US5</span><p>As a location host, I get the booking with the configuration.</p><span class="ac">Booking reaches the host's calendar within 5 minutes. Unacknowledged after 4 working hours, the regional manager is alerted.</span></div>
+  </div>
+  <p class="src">Out of scope for the MVP: home and self-serve drives, fleet approval workflows, financing and trade-in, configurator redesign.</p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Success</span><h2>One number to move, one that must not break</h2></div>
+  <div class="two">
+    <div class="metric north"><span class="tag">North star</span><b>Configurator-to-test-drive booking rate</b><p>Drives booked within 7 days ÷ completed configurations. Target: +20% relative vs control.</p></div>
+    <div class="metric guard"><span class="tag">Guardrail</span><b>Test-drive show-up rate</b><p>Drives taken ÷ drives booked. Easier booking must not buy no-shows: no drop over 3 percentage points.</p></div>
+  </div>
+  <p>Measured with a 4-week A/B test on the summary screen, counted per configuration rather than per session. Supporting metrics: time to confirmation, slot coverage by postcode and drive-to-order rate after 60 days.</p>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">Roadmap</span><h2>Prove it in one region before adding new drive formats</h2></div>
+  <div class="road">
+    <div class="phase now"><span class="tag" style="color:var(--accent)">MVP · pilot region</span><ul><li>A · Real slots on the summary</li><li>C · Instant confirmation and reminders</li><li>Host alert after 4 working hours</li></ul><span class="gate">Gate: booking rate +20%, show-up within 3 pp</span></div>
+    <div class="phase"><span class="tag" style="color:var(--muted)">Next · whole market</span><ul><li>B · Save configuration with price summary</li><li>Share configuration with a fleet manager</li></ul><span class="gate">Gate: slot coverage mapped by postcode</span></div>
+    <div class="phase"><span class="tag" style="color:var(--muted)">Later · where slots are scarce</span><ul><li>D · Home or workplace drive</li><li>E · Self-serve keyless drive</li><li>F · 24-hour drive</li></ul><span class="gate">For shoppers 40 km or more from a location</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head"><span class="eyebrow">What I'd test first with real data</span><h2>The riskiest assumptions</h2></div>
+  <ol class="tests">
+    <li><strong>Locations can publish live slots.</strong> If they can't, the MVP becomes a request form with a faster call-back. First test: ask three hosts how they schedule drives today.</li>
+    <li><strong>Friction, not low intent, drives the drop-off.</strong> The conversations say it's both. Funnel data would show how many click "book" but don't submit.</li>
+    <li><strong>Easier booking won't raise no-shows.</strong> Watch the guardrail weekly during the A/B test.</li>
+  </ol>
+</section>
+
+<footer>
+  <p><strong>Aishwarya Sonawane</strong> · M.Eng. Technology &amp; Innovation Management, Hochschule Harz · Background in automotive customer journey and business analytics</p>
+  <p>This is an independent concept project. It uses only public information and my own research, and no data from any company.</p>
+  <p><a href="https://claude.ai/artifact/1L8TAEWpkXn5XG1sDh1dDM" target="_blank" rel="noopener">Read the full working document</a>: research kit, teardown, full PRD, coded data and sources.</p>
+</footer>
+
+</main>
+</body></html>
